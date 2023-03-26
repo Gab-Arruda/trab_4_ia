@@ -65,12 +65,11 @@ class QLearningAgent(ReinforcementAgent):
           terminal state, you should return a value of 0.0.
         """
         legal_actions = self.getLegalActions(state)
-        if len(legal_actions) != 0:
-            best_value = -1000000.0
-            for action in legal_actions:
-                if self.getQValue(state, action) > best_value:
-                    best_value = self.getQValue(state, action)
-            return best_value
+        actions_q_value = []
+        for action in legal_actions:
+            actions_q_value.append(self.getQValue(state, action))
+        if len(actions_q_value) > 0:
+            return max(actions_q_value)
         else:
             return 0.0
 
@@ -81,14 +80,16 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         legal_actions = self.getLegalActions(state)
+
         if len(legal_actions) != 0:
-            best_action = None
-            best_value = -1000000.0
-            for action in legal_actions:
-                if self.getQValue(state, action) > best_value:
-                    best_value = self.getQValue(state, action)
-                    best_action = action
-            return best_action
+            # best_action = None
+            # best_value = -1000
+            # for action in legal_actions:
+            #     if self.getQValue(state, action) > best_value:
+            #         best_value = self.getQValue(state, action)
+            #         best_action = action
+            # return best_action
+            return max(legal_actions, key=lambda action: self.getQValue(state, action))
         else:
             return None
 
@@ -100,14 +101,13 @@ class QLearningAgent(ReinforcementAgent):
           no legal actions, which is the case at the terminal state, you
           should choose None as the action.
         """
-        # Pick Action
+
         legal_actions = self.getLegalActions(state)
-        action = None
-        if util.flipCoin(self.epsilon):
-            action = random.choice(legal_actions)
-        else:
-            action = self.computeActionFromQValues(state)
-        return action
+
+        if len(legal_actions) == 0:
+            return None
+
+        return random.choice(legal_actions) if util.flipCoin(self.epsilon) else self.computeActionFromQValues(state)
 
     def update(self, state, action, nextState, reward):
         """
@@ -117,8 +117,8 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        self.qvalues[(state, action)] = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * (
-                    reward + self.discount * self.computeValueFromQValues(nextState))
+        self.qvalues[state, action] = (1 - self.alpha) * self.getQValue(state, action) + self.alpha * (
+                reward + self.discount * self.computeValueFromQValues(nextState))
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
@@ -188,10 +188,10 @@ class ApproximateQAgent(PacmanQAgent):
         """
            Should update your weights based on transition
         """
-        delta = reward + self.discount * self.computeValueFromQValues(nextState) - self.getQValue(state, action)
+        diff = reward + self.discount * self.computeValueFromQValues(nextState) - self.getQValue(state, action)
         features = self.featExtractor.getFeatures(state, action)
         for feature in features:
-            self.weights[feature] += self.alpha * delta * features[feature]
+            self.weights[feature] += self.alpha * diff * features[feature]
 
     def final(self, state):
         """Called at the end of each game."""

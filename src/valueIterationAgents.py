@@ -48,10 +48,11 @@ class ValueIterationAgent(ValueEstimationAgent):
             values = self.values.copy()
             for state in self.mdp.getStates():
                 if not self.mdp.isTerminal(state):
-                    qvalues = [self.computeQValueFromValues(state, action)
-                                for action in self.mdp.getPossibleActions(state)]
-                    # print(state)
-                    values[state] = max(qvalues)
+                    # qvalues = [self.computeQValueFromValues(state, action)
+                    #             for action in self.mdp.getPossibleActions(state)]
+                    # print(qvalues)
+                    values[state] = max([self.computeQValueFromValues(state, action)
+                                         for action in self.mdp.getPossibleActions(state)])
             self.values = values
 
     def getValue(self, state):
@@ -67,7 +68,8 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         qvalue = 0
         for next_state, prob in self.mdp.getTransitionStatesAndProbs(state, action):
-            qvalue = qvalue + prob * (self.mdp.getReward(state, action, next_state) + self.discount * self.getValue(next_state))
+            qvalue = qvalue + prob * (
+                    self.mdp.getReward(state, action, next_state) + self.discount * self.getValue(next_state))
         return qvalue
 
     def computeActionFromValues(self, state):
@@ -81,10 +83,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         best_action = None
         if not self.mdp.isTerminal(state):
-            actions = [(action, self.computeQValueFromValues(state, action))
-                       for action in self.mdp.getPossibleActions(state)]
+            # actions = [(action, self.computeQValueFromValues(state, action))
+            #            for action in self.mdp.getPossibleActions(state)]
             # print(actions)
-            best_action, best_value = max(actions, key=lambda a: a[1])
+            best_action, best_value = max([(action, self.computeQValueFromValues(state, action))
+                                           for action in self.mdp.getPossibleActions(state)], key=lambda a: a[1])
         return best_action
 
     def getPolicy(self, state):

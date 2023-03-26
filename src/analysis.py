@@ -26,11 +26,10 @@ def question2():
 
 def question3a():
     # get the close reward, risking the cliff
-    answerDiscount = 0.2
+    answerDiscount = 0.3
     answerNoise = 0
     answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
     # get the close reward, avoiding the cliff
@@ -38,7 +37,6 @@ def question3b():
     answerNoise = 0.2
     answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
     # Prefer the distant exit (+10), risking the cliff (-10)
@@ -46,7 +44,6 @@ def question3c():
     answerNoise = 0
     answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
     # Prefer the distant exit (+10), avoiding the cliff (-10)
@@ -54,15 +51,13 @@ def question3d():
     answerNoise = 0.2
     answerLivingReward = 0
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
     # Avoid both exits and the cliff (so an episode should never terminate)
     answerDiscount = 0
     answerNoise = 0
-    answerLivingReward = 200
+    answerLivingReward = 2
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
 
 def question6():
     answerEpsilon = None
